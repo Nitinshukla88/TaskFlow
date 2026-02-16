@@ -28,13 +28,11 @@ const listSchema = new mongoose.Schema({
   }
 });
 
-// Update the updatedAt timestamp on save
 listSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Create compound index for efficient ordering within boards
 listSchema.index({ board: 1, position: 1 });
 
 module.exports = mongoose.model('List', listSchema);

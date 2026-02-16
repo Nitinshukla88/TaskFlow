@@ -37,13 +37,11 @@ const boardSchema = new mongoose.Schema({
   }
 });
 
-// Update the updatedAt timestamp on save
 boardSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Automatically add owner to members array if not present
 boardSchema.pre('save', function(next) {
   if (!this.members.includes(this.owner)) {
     this.members.push(this.owner);
@@ -51,7 +49,6 @@ boardSchema.pre('save', function(next) {
   next();
 });
 
-// Create indexes for efficient queries
 boardSchema.index({ owner: 1 });
 boardSchema.index({ members: 1 });
 boardSchema.index({ title: 1 });

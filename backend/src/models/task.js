@@ -65,13 +65,11 @@ const taskSchema = new mongoose.Schema({
   }
 });
 
-// Update the updatedAt timestamp on save
 taskSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Create indexes for efficient queries
 taskSchema.index({ list: 1, position: 1 });
 taskSchema.index({ board: 1 });
 taskSchema.index({ assignedTo: 1 });

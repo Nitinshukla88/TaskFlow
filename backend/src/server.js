@@ -10,7 +10,6 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const server = http.createServer(app);
 
-// Socket.IO configuration
 const io = socketio(server, {
   cors: {
     origin: process.env.CLIENT_URL || 'http://localhost:3000',
@@ -19,7 +18,6 @@ const io = socketio(server, {
   }
 });
 
-// Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true
@@ -28,13 +26,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
-// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/boards', require('./routes/boards'));
 app.use('/api/lists', require('./routes/lists'));
 app.use('/api/tasks', require('./routes/tasks'));
 
-// Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
@@ -43,7 +39,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Root endpoint
 app.get('/', (req, res) => {
   res.json({
     message: 'Task Collaboration Platform API',
@@ -58,7 +53,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// Socket.IO authentication middleware
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
   
@@ -75,23 +69,19 @@ io.use((socket, next) => {
   }
 });
 
-// Socket.IO connection handling
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.userId}`);
 
-  // Join board room
   socket.on('join-board', (boardId) => {
     socket.join(`board-${boardId}`);
     console.log(`User ${socket.userId} joined board ${boardId}`);
   });
 
-  // Leave board room
   socket.on('leave-board', (boardId) => {
     socket.leave(`board-${boardId}`);
     console.log(`User ${socket.userId} left board ${boardId}`);
   });
 
-  // Board events
   socket.on('board-updated', (data) => {
     socket.to(`board-${data.boardId}`).emit('board-updated', data);
   });
@@ -100,7 +90,6 @@ io.on('connection', (socket) => {
     io.to(`board-${data.boardId}`).emit('board-deleted', data);
   });
 
-  // List events
   socket.on('list-created', (data) => {
     socket.to(`board-${data.boardId}`).emit('list-created', data);
   });
@@ -117,7 +106,6 @@ io.on('connection', (socket) => {
     socket.to(`board-${data.boardId}`).emit('lists-reordered', data);
   });
 
-  // Task events
   socket.on('task-created', (data) => {
     socket.to(`board-${data.boardId}`).emit('task-created', data);
   });
@@ -138,7 +126,6 @@ io.on('connection', (socket) => {
     socket.to(`board-${data.boardId}`).emit('tasks-reordered', data);
   });
 
-  // Member events
   socket.on('member-added', (data) => {
     io.to(`board-${data.boardId}`).emit('member-added', data);
   });
@@ -147,7 +134,6 @@ io.on('connection', (socket) => {
     io.to(`board-${data.boardId}`).emit('member-removed', data);
   });
 
-  // Activity events
   socket.on('activity-logged', (data) => {
     socket.to(`board-${data.boardId}`).emit('activity-logged', data);
   });
@@ -157,10 +143,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Make io accessible in routes
 app.set('io', io);
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Error:', err.stack);
   res.status(err.status || 500).json({ 
@@ -169,12 +153,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });
 
-// Database connection
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -188,7 +170,6 @@ mongoose.connect(process.env.MONGODB_URI, {
     process.exit(1);
   });
 
-// Handle MongoDB connection events
 mongoose.connection.on('disconnected', () => {
   console.log('MongoDB disconnected');
 });
@@ -197,7 +178,6 @@ mongoose.connection.on('error', (err) => {
   console.error('MongoDB error:', err);
 });
 
-// Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received. Shutting down gracefully...');
   server.close(() => {

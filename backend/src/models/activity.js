@@ -47,7 +47,6 @@ const activitySchema = new mongoose.Schema({
   }
 });
 
-// Create compound index for efficient activity feed queries
 activitySchema.index({ board: 1, createdAt: -1 });
 activitySchema.index({ user: 1 });
 
