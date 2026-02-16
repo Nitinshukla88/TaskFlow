@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import { taskAPI } from '../services/api'
+import UserSelector from './UserSelector'
 import toast from 'react-hot-toast'
 
 const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
   const [task, setTask] = useState(null)
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
+  const [editingAssignment, setEditingAssignment] = useState(false)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [assignedUsers, setAssignedUsers] = useState([])
 
   useEffect(() => {
     loadTask()
@@ -19,6 +22,7 @@ const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
       setTask(data.task)
       setTitle(data.task.title)
       setDescription(data.task.description || '')
+      setAssignedUsers(data.task.assignedTo || [])
     } catch (error) {
       toast.error('Failed to load task')
     } finally {
@@ -35,6 +39,20 @@ const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
       toast.success('Task updated!')
     } catch (error) {
       toast.error('Failed to update task')
+    }
+  }
+
+  const handleUpdateAssignment = async () => {
+    try {
+      const { data } = await taskAPI.update(taskId, {
+        assignedTo: assignedUsers.map(u => u._id)
+      })
+      setTask(data.task)
+      onUpdated(data.task)
+      setEditingAssignment(false)
+      toast.success('Assignment updated!')
+    } catch (error) {
+      toast.error('Failed to update assignment')
     }
   }
 
@@ -68,7 +86,39 @@ const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal max-w-2xl" onClick={(e) => e.stopPropagation()}>
-        {editing ? (
+        {editingAssignment ? (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-bold">Assign Users</h3>
+              <button
+                onClick={() => setEditingAssignment(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <UserSelector
+              selectedUsers={assignedUsers}
+              onUsersChange={setAssignedUsers}
+            />
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleUpdateAssignment}
+                className="btn btn-primary flex-1"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => setEditingAssignment(false)}
+                className="btn btn-secondary"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : editing ? (
           <div className="space-y-6">
             <input
               type="text"
@@ -128,12 +178,20 @@ const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
 
             {task.assignedTo && task.assignedTo.length > 0 && (
               <div className="pb-6 border-b border-gray-700">
-                <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
-                  Assigned To
-                </h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
+                    Assigned To
+                  </h3>
+                  <button
+                    onClick={() => setEditingAssignment(true)}
+                    className="text-xs text-gray-400 hover:text-white transition-colors"
+                  >
+                    Edit
+                  </button>
+                </div>
                 <div className="flex flex-wrap gap-3">
                   {task.assignedTo.map((user) => (
-                    <div 
+                    <div
                       key={user._id}
                       className="flex items-center gap-2 px-3 py-2 bg-dark-100 border border-gray-700 rounded-lg"
                     >
@@ -144,6 +202,23 @@ const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {!task.assignedTo || task.assignedTo.length === 0 && (
+              <div className="pb-6 border-b border-gray-700">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
+                    Assigned To
+                  </h3>
+                  <button
+                    onClick={() => setEditingAssignment(true)}
+                    className="text-xs text-primary hover:text-secondary transition-colors"
+                  >
+                    Add users
+                  </button>
+                </div>
+                <p className="text-sm text-gray-500">No one assigned</p>
               </div>
             )}
 

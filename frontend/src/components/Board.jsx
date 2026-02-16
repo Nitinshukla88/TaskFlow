@@ -9,12 +9,16 @@ import TaskCard from './TaskCard'
 import CreateListModal from './CreateListModal'
 import CreateTaskModal from './CreateTaskModal'
 import TaskDetailModal from './TaskDetailModal'
+import ActivityPanel from './ActivityPanel'
+import MemberPanel from './MemberPanel'
 
 const Board = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [showCreateList, setShowCreateList] = useState(false)
   const [showCreateTask, setShowCreateTask] = useState(false)
+  const [showActivityPanel, setShowActivityPanel] = useState(false)
+  const [showMemberPanel, setShowMemberPanel] = useState(false)
   const [selectedListId, setSelectedListId] = useState(null)
   const [selectedTaskId, setSelectedTaskId] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -145,6 +149,14 @@ const Board = () => {
   const getTasksByList = (listId) => {
     return tasks
       .filter(task => task.list === listId)
+      .filter(task => {
+        if (!searchQuery) return true
+        const query = searchQuery.toLowerCase()
+        return (
+          task.title.toLowerCase().includes(query) ||
+          (task.description && task.description.toLowerCase().includes(query))
+        )
+      })
       .sort((a, b) => a.position - b.position)
   }
 
@@ -189,6 +201,24 @@ const Board = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30 w-64"
             />
+            <button
+              onClick={() => setShowMemberPanel(true)}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white"
+              title="Members"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-2a6 6 0 0112 0v2zm0 0h6v-2a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setShowActivityPanel(true)}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white"
+              title="Activity"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
           </div>
         </div>
       </header>
@@ -305,6 +335,28 @@ const Board = () => {
           onDeleted={(taskId) => {
             removeTask(taskId)
             socketService.emitTaskDeleted({ boardId: id, taskId })
+          }}
+        />
+      )}
+
+      <ActivityPanel
+        boardId={id}
+        isOpen={showActivityPanel}
+        onClose={() => setShowActivityPanel(false)}
+      />
+
+      {currentBoard && (
+        <MemberPanel
+          board={currentBoard}
+          isOpen={showMemberPanel}
+          onClose={() => setShowMemberPanel(false)}
+          onMemberAdded={(members) => {
+            useBoardStore.getState().updateBoard(id, { members })
+            socketService.emitBoardUpdated({ boardId: id, board: { ...currentBoard, members } })
+          }}
+          onMemberRemoved={(members) => {
+            useBoardStore.getState().updateBoard(id, { members })
+            socketService.emitBoardUpdated({ boardId: id, board: { ...currentBoard, members } })
           }}
         />
       )}

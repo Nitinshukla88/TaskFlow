@@ -99,6 +99,26 @@ class SocketService {
     this.socket?.on('task-moved', callback)
   }
 
+  emitMemberAdded(data) {
+    this.socket?.emit('member-added', data)
+  }
+
+  onMemberAdded(callback) {
+    this.socket?.on('member-added', callback)
+  }
+
+  emitMemberRemoved(data) {
+    this.socket?.emit('member-removed', data)
+  }
+
+  onMemberRemoved(callback) {
+    this.socket?.on('member-removed', callback)
+  }
+
+  onActivityLogged(callback) {
+    this.socket?.on('activity-logged', callback)
+  }
+
   removeAllListeners() {
     if (this.socket) {
       this.socket.removeAllListeners()

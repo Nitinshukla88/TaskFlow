@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { taskAPI } from '../services/api'
+import UserSelector from './UserSelector'
 import toast from 'react-hot-toast'
 
 const CreateTaskModal = ({ listId, onClose, onCreated }) => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [assignedTo, setAssignedTo] = useState([])
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e) => {
@@ -12,7 +14,12 @@ const CreateTaskModal = ({ listId, onClose, onCreated }) => {
     setLoading(true)
 
     try {
-      const { data } = await taskAPI.create({ title, description, listId })
+      const { data } = await taskAPI.create({
+        title,
+        description,
+        listId,
+        assignedTo: assignedTo.map(u => u._id)
+      })
       toast.success('Task created!')
       onCreated(data.task)
       onClose()
@@ -56,6 +63,11 @@ const CreateTaskModal = ({ listId, onClose, onCreated }) => {
               rows="4"
             />
           </div>
+
+          <UserSelector
+            selectedUsers={assignedTo}
+            onUsersChange={setAssignedTo}
+          />
 
           <div className="flex gap-3 pt-4">
             <button 
