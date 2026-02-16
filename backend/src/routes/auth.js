@@ -5,12 +5,10 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 
-// Generate JWT token
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
-// Register new user
 router.post('/register', [
   body('username').trim().isLength({ min: 3, max: 30 }),
   body('email').isEmail().normalizeEmail(),
@@ -44,7 +42,6 @@ router.post('/register', [
   }
 });
 
-// Login user
 router.post('/login', [
   body('email').isEmail().normalizeEmail(),
   body('password').exists()
@@ -79,7 +76,6 @@ router.post('/login', [
   }
 });
 
-// Get current user
 router.get('/me', auth, async (req, res) => {
   try {
     res.json({ user: req.user.toJSON() });
@@ -89,7 +85,6 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-// Search users
 router.get('/users/search', auth, async (req, res) => {
   try {
     const { q } = req.query;

@@ -8,7 +8,6 @@ const UserSelector = ({ selectedUsers = [], onUsersChange, boardMembers = [] }) 
   const [loading, setLoading] = useState(false)
   const containerRef = useRef(null)
 
-  // Search for users when typing
   useEffect(() => {
     const searchUsers = async () => {
       if (searchTerm.length < 1) {
@@ -32,7 +31,6 @@ const UserSelector = ({ selectedUsers = [], onUsersChange, boardMembers = [] }) 
     return () => clearTimeout(timer)
   }, [searchTerm])
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -63,7 +61,6 @@ const UserSelector = ({ selectedUsers = [], onUsersChange, boardMembers = [] }) 
 
   const isUserSelected = (userId) => selectedUsers.some(u => u._id === userId)
 
-  // Filter out already selected users and board members not in results
   const availableUsers = users.filter(u => !isUserSelected(u._id))
 
   return (
@@ -72,7 +69,6 @@ const UserSelector = ({ selectedUsers = [], onUsersChange, boardMembers = [] }) 
         Assign Users (Optional)
       </label>
 
-      {/* Selected Users */}
       {selectedUsers.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-3 p-3 bg-dark-100 rounded-lg border border-gray-700">
           {selectedUsers.map((user) => (
@@ -96,7 +92,6 @@ const UserSelector = ({ selectedUsers = [], onUsersChange, boardMembers = [] }) 
         </div>
       )}
 
-      {/* Dropdown */}
       <div className="relative" ref={containerRef}>
         <input
           type="text"

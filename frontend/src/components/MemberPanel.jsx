@@ -17,7 +17,6 @@ const MemberPanel = ({ board, isOpen, onClose, onMemberAdded, onMemberRemoved })
     setLoading(true)
     try {
       const { data } = await authAPI.searchUsers(query)
-      // Filter out users already in the board
       const filtered = data.users.filter(
         user => !board.members.some(m => m._id === user._id)
       )
@@ -73,7 +72,6 @@ const MemberPanel = ({ board, isOpen, onClose, onMemberAdded, onMemberRemoved })
   return (
     <div className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center">
       <div className="bg-dark-200 rounded-xl w-full max-w-md max-h-[80vh] overflow-hidden flex flex-col border border-gray-700">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <h2 className="text-2xl font-bold">Board Members</h2>
           <button
@@ -86,9 +84,7 @@ const MemberPanel = ({ board, isOpen, onClose, onMemberAdded, onMemberRemoved })
           </button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Search & Add Members */}
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
               Add Members
@@ -101,7 +97,6 @@ const MemberPanel = ({ board, isOpen, onClose, onMemberAdded, onMemberRemoved })
               className="input w-full"
             />
 
-            {/* Search Results */}
             {searchResults.length > 0 && (
               <div className="bg-dark-100 border border-gray-700 rounded-lg max-h-48 overflow-y-auto">
                 {searchResults.map((user) => (
@@ -136,7 +131,6 @@ const MemberPanel = ({ board, isOpen, onClose, onMemberAdded, onMemberRemoved })
             )}
           </div>
 
-          {/* Current Members */}
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
               Current Members ({board.members.length})

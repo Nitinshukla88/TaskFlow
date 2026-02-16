@@ -10,7 +10,6 @@ const auth = require('../middleware/auth');
 const logActivity = async (board, user, action, entity, entityId, details = {}, io) => {
   try {
     const activity = await Activity.create({ board, user, action, entity, entityId, details });
-    // Emit socket event to board members
     if (io) {
       io.to(`board-${board}`).emit('activity-logged', { activity });
     }
@@ -19,7 +18,6 @@ const logActivity = async (board, user, action, entity, entityId, details = {}, 
   }
 };
 
-// Get all boards
 router.get('/', auth, async (req, res) => {
   try {
     const boards = await Board.find({
@@ -36,7 +34,6 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// Get single board with lists and tasks
 router.get('/:id', auth, async (req, res) => {
   try {
     const board = await Board.findById(req.params.id)
@@ -67,7 +64,6 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-// Create board
 router.post('/', [auth, body('title').notEmpty().trim()], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -96,7 +92,6 @@ router.post('/', [auth, body('title').notEmpty().trim()], async (req, res) => {
   }
 });
 
-// Update board
 router.put('/:id', [auth, body('title').optional().notEmpty().trim()], async (req, res) => {
   try {
     const board = await Board.findById(req.params.id);
@@ -127,7 +122,6 @@ router.put('/:id', [auth, body('title').optional().notEmpty().trim()], async (re
   }
 });
 
-// Delete board
 router.delete('/:id', auth, async (req, res) => {
   try {
     const board = await Board.findById(req.params.id);
@@ -152,7 +146,6 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-// Add member
 router.post('/:id/members', auth, async (req, res) => {
   try {
     const { userId } = req.body;
@@ -182,7 +175,6 @@ router.post('/:id/members', auth, async (req, res) => {
   }
 });
 
-// Remove member
 router.delete('/:id/members/:userId', auth, async (req, res) => {
   try {
     const board = await Board.findById(req.params.id);
@@ -206,7 +198,6 @@ router.delete('/:id/members/:userId', auth, async (req, res) => {
   }
 });
 
-// Get activities
 router.get('/:id/activities', auth, async (req, res) => {
   try {
     const { page = 1, limit = 20 } = req.query;

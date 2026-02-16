@@ -18,7 +18,6 @@ const logActivity = async (board, user, action, entity, entityId, details = {}, 
   }
 };
 
-// Create list
 router.post('/', [auth, body('title').notEmpty().trim(), body('boardId').notEmpty()], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -53,7 +52,6 @@ router.post('/', [auth, body('title').notEmpty().trim(), body('boardId').notEmpt
   }
 });
 
-// Update list
 router.put('/:id', [auth, body('title').optional().notEmpty().trim()], async (req, res) => {
   try {
     const list = await List.findById(req.params.id);
@@ -82,7 +80,6 @@ router.put('/:id', [auth, body('title').optional().notEmpty().trim()], async (re
   }
 });
 
-// Delete list
 router.delete('/:id', auth, async (req, res) => {
   try {
     const list = await List.findById(req.params.id);
@@ -108,7 +105,6 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-// Reorder lists
 router.put('/reorder/positions', auth, async (req, res) => {
   try {
     const { listPositions } = req.body;

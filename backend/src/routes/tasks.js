@@ -18,7 +18,6 @@ const logActivity = async (board, user, action, entity, entityId, details = {}, 
   }
 };
 
-// Create task
 router.post('/', [auth, body('title').notEmpty().trim(), body('listId').notEmpty()], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -67,7 +66,6 @@ router.post('/', [auth, body('title').notEmpty().trim(), body('listId').notEmpty
   }
 });
 
-// Get single task
 router.get('/:id', auth, async (req, res) => {
   try {
     const task = await Task.findById(req.params.id)
@@ -92,7 +90,6 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-// Update task
 router.put('/:id', auth, async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -128,7 +125,6 @@ router.put('/:id', auth, async (req, res) => {
   }
 });
 
-// Move task
 router.put('/:id/move', [auth, body('listId').notEmpty(), body('position').isNumeric()], async (req, res) => {
   try {
     const { listId, position } = req.body;
@@ -170,7 +166,6 @@ router.put('/:id/move', [auth, body('listId').notEmpty(), body('position').isNum
   }
 });
 
-// Delete task
 router.delete('/:id', auth, async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -195,7 +190,6 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-// Search tasks
 router.get('/board/:boardId/search', auth, async (req, res) => {
   try {
     const { q, page = 1, limit = 20 } = req.query;
@@ -242,7 +236,6 @@ router.get('/board/:boardId/search', auth, async (req, res) => {
   }
 });
 
-// Reorder tasks
 router.put('/reorder/positions', auth, async (req, res) => {
   try {
     const { taskPositions } = req.body;

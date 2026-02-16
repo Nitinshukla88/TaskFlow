@@ -88,7 +88,6 @@ const ActivityPanel = ({ boardId, isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center">
       <div className="bg-dark-200 rounded-xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col border border-gray-700">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <h2 className="text-2xl font-bold">Activity History</h2>
           <button
@@ -101,7 +100,6 @@ const ActivityPanel = ({ boardId, isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
           {loading ? (
             <div className="flex items-center justify-center h-full">
@@ -114,12 +112,10 @@ const ActivityPanel = ({ boardId, isOpen, onClose }) => {
                   key={activity._id}
                   className="flex gap-4 p-4 bg-white/5 border border-gray-700 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  {/* Icon */}
                   <div className="text-2xl flex-shrink-0">
                     {getActionIcon(activity.action)}
                   </div>
 
-                  {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div>
@@ -153,7 +149,6 @@ const ActivityPanel = ({ boardId, isOpen, onClose }) => {
           )}
         </div>
 
-        {/* Pagination */}
         {activities.length > 0 && (
           <div className="border-t border-gray-700 p-6">
             <Pagination
