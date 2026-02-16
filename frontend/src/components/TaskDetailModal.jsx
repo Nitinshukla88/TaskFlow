@@ -95,7 +95,6 @@ const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
           </div>
         ) : (
           <div className="space-y-6">
-            {/* Header */}
             <div className="flex items-start justify-between">
               <h2 className="text-2xl font-bold text-white flex-1 break-words">
                 {task.title}
@@ -116,7 +115,6 @@ const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
               </div>
             </div>
 
-            {/* Description */}
             {task.description && (
               <div className="pb-6 border-b border-gray-700">
                 <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
@@ -128,7 +126,6 @@ const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
               </div>
             )}
 
-            {/* Assigned To */}
             {task.assignedTo && task.assignedTo.length > 0 && (
               <div className="pb-6 border-b border-gray-700">
                 <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
@@ -150,7 +147,6 @@ const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
               </div>
             )}
 
-            {/* Labels */}
             {task.labels && task.labels.length > 0 && (
               <div className="pb-6 border-b border-gray-700">
                 <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
@@ -170,7 +166,6 @@ const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
               </div>
             )}
 
-            {/* Due Date */}
             {task.dueDate && (
               <div className="pb-6 border-b border-gray-700">
                 <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
@@ -190,7 +185,6 @@ const TaskDetailModal = ({ taskId, onClose, onUpdated, onDeleted }) => {
               </div>
             )}
 
-            {/* Footer */}
             {task.createdBy && (
               <div className="pt-6 border-t border-gray-700">
                 <p className="text-sm text-gray-400">

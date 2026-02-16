@@ -29,13 +29,10 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
       
-      {/* Login Card */}
       <div className="relative z-10 w-full max-w-md">
         <div className="bg-dark-200 border border-gray-700 rounded-2xl p-8 shadow-2xl animate-slideUp">
-          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-2">
               <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -45,7 +42,6 @@ const Login = () => {
             <p className="text-gray-400">Sign in to your account</p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">
@@ -91,7 +87,6 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Footer */}
           <div className="mt-8 pt-6 border-t border-gray-700 text-center">
             <p className="text-gray-400 text-sm">
               Don't have an account?{' '}

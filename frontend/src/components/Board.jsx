@@ -83,7 +83,6 @@ const Board = () => {
       const sourceListId = source.droppableId
       const destListId = destination.droppableId
 
-      // Optimistic update
       const newTasks = Array.from(tasks)
       const taskIndex = newTasks.findIndex(t => t._id === draggableId)
       const [movedTask] = newTasks.splice(taskIndex, 1)
@@ -102,7 +101,6 @@ const Board = () => {
 
       reorderTasks(newTasks)
 
-      // Persist to server
       try {
         await taskAPI.move(draggableId, {
           listId: destListId,
@@ -165,10 +163,8 @@ const Board = () => {
         background: `linear-gradient(135deg, ${currentBoard?.background}dd 0%, ${currentBoard?.background}55 100%)` 
       }}
     >
-      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/30" />
 
-      {/* Header */}
       <header className="relative z-10 bg-black/20 backdrop-blur-md border-b border-white/10 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -197,15 +193,12 @@ const Board = () => {
         </div>
       </header>
 
-      {/* Board Content */}
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="relative z-10 flex-1 overflow-x-auto p-6">
           <div className="flex gap-6 min-h-full">
-            {/* Lists */}
             {lists.map((list) => (
               <div key={list._id} className="flex-shrink-0 w-80">
                 <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4">
-                  {/* List Header */}
                   <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/20">
                     <h3 className="font-semibold text-white text-lg">
                       {list.title}
@@ -220,7 +213,6 @@ const Board = () => {
                     </button>
                   </div>
 
-                  {/* Tasks */}
                   <Droppable droppableId={list._id} type="task">
                     {(provided, snapshot) => (
                       <div
@@ -253,7 +245,6 @@ const Board = () => {
                     )}
                   </Droppable>
 
-                  {/* Add Task Button */}
                   <button
                     onClick={() => handleCreateTask(list._id)}
                     className="w-full mt-3 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
@@ -265,7 +256,6 @@ const Board = () => {
               </div>
             ))}
 
-            {/* Add List Button */}
             <div className="flex-shrink-0">
               <button
                 onClick={() => setShowCreateList(true)}
@@ -279,7 +269,6 @@ const Board = () => {
         </div>
       </DragDropContext>
 
-      {/* Modals */}
       {showCreateList && (
         <CreateListModal
           boardId={id}

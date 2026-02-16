@@ -10,19 +10,16 @@ const TaskCard = ({ task, onClick, isDragging }) => {
         isDragging ? 'opacity-50 rotate-2 shadow-2xl' : ''
       }`}
     >
-      {/* Title */}
       <h4 className="font-semibold text-white mb-2 line-clamp-2">
         {task.title}
       </h4>
 
-      {/* Description */}
       {task.description && (
         <p className="text-gray-400 text-sm mb-3 line-clamp-2">
           {task.description}
         </p>
       )}
 
-      {/* Labels */}
       {task.labels && task.labels.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-3">
           {task.labels.map((label, idx) => (
@@ -37,9 +34,7 @@ const TaskCard = ({ task, onClick, isDragging }) => {
         </div>
       )}
 
-      {/* Footer */}
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-700">
-        {/* Assignees */}
         {task.assignedTo && task.assignedTo.length > 0 && (
           <div className="flex -space-x-2">
             {task.assignedTo.slice(0, 3).map((user) => (
@@ -59,7 +54,6 @@ const TaskCard = ({ task, onClick, isDragging }) => {
           </div>
         )}
 
-        {/* Due Date */}
         {task.dueDate && (
           <div className="flex items-center gap-1 text-xs text-gray-400">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

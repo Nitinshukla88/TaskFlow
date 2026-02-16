@@ -50,7 +50,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
       <nav className="bg-dark-200 border-b border-gray-700 px-6 py-4 sticky top-0 z-50 backdrop-blur-lg bg-dark-200/90">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <h2 className="text-2xl font-bold">
@@ -78,9 +77,7 @@ const Dashboard = () => {
         </div>
       </nav>
 
-      {/* Main Content */}
       <main className="flex-1 p-6 max-w-7xl w-full mx-auto">
-        {/* Header */}
         <div className="flex items-start justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">Your Boards</h1>
@@ -95,7 +92,6 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Boards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {boards.map((board) => (
             <div
@@ -106,10 +102,8 @@ const Dashboard = () => {
                 background: `linear-gradient(135deg, ${board.background}dd 0%, ${board.background}88 100%)` 
               }}
             >
-              {/* Dark overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
               
-              {/* Content */}
               <div className="relative z-10 flex-1">
                 <h3 className="text-xl font-bold text-white mb-2 drop-shadow-lg">
                   {board.title}
@@ -121,7 +115,6 @@ const Dashboard = () => {
                 )}
               </div>
 
-              {/* Members */}
               <div className="relative z-10 flex items-center mt-4">
                 <div className="flex -space-x-2">
                   {board.members.slice(0, 3).map((member) => (
@@ -143,7 +136,6 @@ const Dashboard = () => {
             </div>
           ))}
 
-          {/* Empty State */}
           {boards.length === 0 && (
             <div className="col-span-full">
               <div className="card text-center py-16 border-2 border-dashed border-gray-700">
@@ -162,7 +154,6 @@ const Dashboard = () => {
         </div>
       </main>
 
-      {/* Create Board Modal */}
       {showCreateModal && (
         <CreateBoardModal
           onClose={() => setShowCreateModal(false)}
