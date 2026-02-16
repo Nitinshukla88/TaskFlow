@@ -4,17 +4,17 @@ A lightweight Trello/Notion hybrid with real-time collaboration features built w
 
 ## Features
 
-✅ User authentication (signup/login)
-✅ Create and manage boards
-✅ Create lists within boards
-✅ Create, update, and delete tasks
-✅ Drag and drop tasks across lists
-✅ Assign users to tasks
-✅ Real-time updates using WebSockets
-✅ Activity history tracking
-✅ Search functionality
-✅ Pagination support
-✅ Responsive design
+- User authentication (signup/login)
+- Create and manage boards
+- Create lists within boards
+- Create, update, and delete tasks
+- Drag and drop tasks across lists
+- Assign users to tasks
+- Real-time updates using WebSockets
+- Activity history tracking
+- Search functionality
+- Pagination support
+- Responsive design
 
 ## Tech Stack
 
@@ -391,7 +391,7 @@ cd backend
 npm test
 ```
 
-## Production Build
+<!-- ## Production Build
 
 ### Backend
 ```bash
@@ -404,9 +404,9 @@ npm start
 cd frontend
 npm run build
 npm run preview
-```
+``` -->
 
-## Scalability Considerations
+<!-- ## Scalability Considerations
 
 1. **Database Optimization**
    - Indexed fields on frequently queried data
@@ -439,7 +439,7 @@ npm run preview
 - Input validation and sanitization
 - CORS configuration
 - Rate limiting (can be added)
-- XSS protection (React default)
+- XSS protection (React default) -->
 
 ## Contributing
 
