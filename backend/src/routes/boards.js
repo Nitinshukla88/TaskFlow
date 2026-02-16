@@ -7,9 +7,13 @@ const Task = require('../models/Task');
 const Activity = require('../models/Activity');
 const auth = require('../middleware/auth');
 
-const logActivity = async (board, user, action, entity, entityId, details = {}) => {
+const logActivity = async (board, user, action, entity, entityId, details = {}, io) => {
   try {
-    await Activity.create({ board, user, action, entity, entityId, details });
+    const activity = await Activity.create({ board, user, action, entity, entityId, details });
+    // Emit socket event to board members
+    if (io) {
+      io.to(`board-${board}`).emit('activity-logged', { activity });
+    }
   } catch (error) {
     console.error('Activity log error:', error);
   }
@@ -83,7 +87,7 @@ router.post('/', [auth, body('title').notEmpty().trim()], async (req, res) => {
     await board.save();
     await board.populate('owner', 'username email avatar');
     await board.populate('members', 'username email avatar');
-    await logActivity(board._id, req.userId, 'board_created', 'board', board._id, { title });
+    await logActivity(board._id, req.userId, 'board_created', 'board', board._id, { title }, req.io);
 
     res.status(201).json({ board });
   } catch (error) {
@@ -114,7 +118,7 @@ router.put('/:id', [auth, body('title').optional().notEmpty().trim()], async (re
     await board.save();
     await board.populate('owner', 'username email avatar');
     await board.populate('members', 'username email avatar');
-    await logActivity(board._id, req.userId, 'board_updated', 'board', board._id, { title: board.title });
+    await logActivity(board._id, req.userId, 'board_updated', 'board', board._id, { title: board.title }, req.io);
 
     res.json({ board });
   } catch (error) {
@@ -138,6 +142,7 @@ router.delete('/:id', auth, async (req, res) => {
     await List.deleteMany({ board: board._id });
     await Task.deleteMany({ board: board._id });
     await Activity.deleteMany({ board: board._id });
+    await logActivity(board._id, req.userId, 'board_deleted', 'board', board._id, { title: board.title }, req.io);
     await Board.findByIdAndDelete(board._id);
 
     res.json({ message: 'Board deleted successfully' });
@@ -168,7 +173,7 @@ router.post('/:id/members', auth, async (req, res) => {
     board.members.push(userId);
     await board.save();
     await board.populate('members', 'username email avatar');
-    await logActivity(board._id, req.userId, 'member_added', 'member', userId);
+    await logActivity(board._id, req.userId, 'member_added', 'member', userId, {}, req.io);
 
     res.json({ board });
   } catch (error) {
@@ -192,7 +197,7 @@ router.delete('/:id/members/:userId', auth, async (req, res) => {
     board.members = board.members.filter(m => !m.equals(req.params.userId));
     await board.save();
     await board.populate('members', 'username email avatar');
-    await logActivity(board._id, req.userId, 'member_removed', 'member', req.params.userId);
+    await logActivity(board._id, req.userId, 'member_removed', 'member', req.params.userId, {}, req.io);
 
     res.json({ board });
   } catch (error) {

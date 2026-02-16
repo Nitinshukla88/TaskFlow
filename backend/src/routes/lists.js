@@ -7,9 +7,12 @@ const Board = require('../models/Board');
 const Activity = require('../models/Activity');
 const auth = require('../middleware/auth');
 
-const logActivity = async (board, user, action, entity, entityId, details = {}) => {
+const logActivity = async (board, user, action, entity, entityId, details = {}, io) => {
   try {
-    await Activity.create({ board, user, action, entity, entityId, details });
+    const activity = await Activity.create({ board, user, action, entity, entityId, details });
+    if (io) {
+      io.to(`board-${board}`).emit('activity-logged', { activity });
+    }
   } catch (error) {
     console.error('Activity log error:', error);
   }
@@ -41,7 +44,7 @@ router.post('/', [auth, body('title').notEmpty().trim(), body('boardId').notEmpt
 
     const list = new List({ title, board: boardId, position });
     await list.save();
-    await logActivity(boardId, req.userId, 'list_created', 'list', list._id, { title });
+    await logActivity(boardId, req.userId, 'list_created', 'list', list._id, { title }, req.io);
 
     res.status(201).json({ list });
   } catch (error) {
@@ -70,7 +73,7 @@ router.put('/:id', [auth, body('title').optional().notEmpty().trim()], async (re
     if (position !== undefined) list.position = position;
 
     await list.save();
-    await logActivity(list.board, req.userId, 'list_updated', 'list', list._id, { title: list.title });
+    await logActivity(list.board, req.userId, 'list_updated', 'list', list._id, { title: list.title }, req.io);
 
     res.json({ list });
   } catch (error) {
@@ -95,7 +98,7 @@ router.delete('/:id', auth, async (req, res) => {
     }
 
     await Task.deleteMany({ list: list._id });
-    await logActivity(list.board, req.userId, 'list_deleted', 'list', list._id, { title: list.title });
+    await logActivity(list.board, req.userId, 'list_deleted', 'list', list._id, { title: list.title }, req.io);
     await List.findByIdAndDelete(list._id);
 
     res.json({ message: 'List deleted successfully' });

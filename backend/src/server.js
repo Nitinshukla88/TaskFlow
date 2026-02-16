@@ -31,6 +31,12 @@ app.use('/api/boards', require('./routes/boards'));
 app.use('/api/lists', require('./routes/lists'));
 app.use('/api/tasks', require('./routes/tasks'));
 
+// Make io accessible to routes
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 

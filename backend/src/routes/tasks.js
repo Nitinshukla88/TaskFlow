@@ -7,9 +7,12 @@ const Board = require('../models/Board');
 const Activity = require('../models/Activity');
 const auth = require('../middleware/auth');
 
-const logActivity = async (board, user, action, entity, entityId, details = {}) => {
+const logActivity = async (board, user, action, entity, entityId, details = {}, io) => {
   try {
-    await Activity.create({ board, user, action, entity, entityId, details });
+    const activity = await Activity.create({ board, user, action, entity, entityId, details });
+    if (io) {
+      io.to(`board-${board}`).emit('activity-logged', { activity });
+    }
   } catch (error) {
     console.error('Activity log error:', error);
   }
@@ -55,7 +58,7 @@ router.post('/', [auth, body('title').notEmpty().trim(), body('listId').notEmpty
     await task.save();
     await task.populate('assignedTo', 'username email avatar');
     await task.populate('createdBy', 'username email avatar');
-    await logActivity(list.board, req.userId, 'task_created', 'task', task._id, { title });
+    await logActivity(list.board, req.userId, 'task_created', 'task', task._id, { title }, req.io);
 
     res.status(201).json({ task });
   } catch (error) {
@@ -116,7 +119,7 @@ router.put('/:id', auth, async (req, res) => {
     await task.save();
     await task.populate('assignedTo', 'username email avatar');
     await task.populate('createdBy', 'username email avatar');
-    await logActivity(task.board, req.userId, 'task_updated', 'task', task._id, { title: task.title });
+    await logActivity(task.board, req.userId, 'task_updated', 'task', task._id, { title: task.title }, req.io);
 
     res.json({ task });
   } catch (error) {
@@ -158,7 +161,7 @@ router.put('/:id/move', [auth, body('listId').notEmpty(), body('position').isNum
       title: task.title,
       fromList: oldListId,
       toList: listId
-    });
+    }, req.io);
 
     res.json({ task });
   } catch (error) {
@@ -182,7 +185,7 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    await logActivity(task.board, req.userId, 'task_deleted', 'task', task._id, { title: task.title });
+    await logActivity(task.board, req.userId, 'task_deleted', 'task', task._id, { title: task.title }, req.io);
     await Task.findByIdAndDelete(task._id);
 
     res.json({ message: 'Task deleted successfully' });
